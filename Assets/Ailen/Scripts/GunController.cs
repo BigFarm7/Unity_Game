@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class GunController : MonoBehaviour
 {
@@ -15,6 +16,7 @@ public class GunController : MonoBehaviour
     private float lastFireTime; 
     private float fireCooldown = 0.5f;
     private bool isReloading = false;
+    public TMP_Text bulletText;
 
     void Start()
     {
@@ -50,6 +52,7 @@ public class GunController : MonoBehaviour
         StartCoroutine(DestroyBullet(bullet,2.0f));
 
         currentAmmo--;
+        bulletText.text = currentAmmo + "/" + maxAmmo;
 
         if (currentAmmo <= 0)
         {
@@ -77,6 +80,7 @@ public class GunController : MonoBehaviour
 
         player.anim.SetBool("isReloading", false); 
         isReloading = false;
+        bulletText.text = currentAmmo + "/" + maxAmmo;
     }
 
     bool IsPlayingAnimation(string animationName)
