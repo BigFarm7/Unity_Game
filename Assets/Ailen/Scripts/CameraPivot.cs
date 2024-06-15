@@ -35,6 +35,8 @@ public class CameraPivot : MonoBehaviour
             targetAngle -= 360;
         }
 
+       
+
         currentAngle = Mathf.LerpAngle(transform.eulerAngles.y,targetAngle,rotationSpeed*Time.deltaTime);
         transform.rotation = Quaternion.Euler(40, currentAngle, 0);
     }

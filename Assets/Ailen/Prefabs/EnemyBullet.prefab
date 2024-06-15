@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 7742489933667451142}
   - component: {fileID: 2031264128041726980}
   - component: {fileID: 6463129574028774263}
-  - component: {fileID: 8596170870977823656}
+  - component: {fileID: -4657760322789581664}
   m_Layer: 0
   m_Name: EnemyBullet
   m_TagString: Untagged
@@ -250,7 +250,7 @@ TrailRenderer:
   m_Autodestruct: 0
   m_Emitting: 1
   m_ApplyActiveColorSpace: 1
---- !u!114 &8596170870977823656
+--- !u!114 &-4657760322789581664
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -259,8 +259,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 8331082971051466035}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a7eac1521acf4f743aeec65d023fd57a, type: 3}
+  m_Script: {fileID: 11500000, guid: 28d262dc107698a44a27f2057bf1d28c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  impactEffectPrefab: {fileID: 2883500188689659607, guid: e983fa90239550046ae7ce5d33b18792,
-    type: 3}

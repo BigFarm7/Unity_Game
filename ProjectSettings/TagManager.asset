@@ -6,11 +6,17 @@ TagManager:
   tags:
   - Wall
   - Effect
+  - Enemy
+  - Tower
+  - Vending
+  - Alien
+  - Lotte
+  - Spider
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - TowerPlayer
   - Water
   - UI
   - Camera

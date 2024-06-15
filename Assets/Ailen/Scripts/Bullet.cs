@@ -15,17 +15,43 @@ public class Bullet : MonoBehaviour
             ContactPoint contact = collision.contacts[0]; // 충돌 지점 정보 가져오기
             Vector3 impactDirection = contact.normal; // 충돌 지점의 법선 벡터의 반대 방향
 
-            GameObject[] effects = GameObject.FindGameObjectsWithTag("Effect");
-            foreach (GameObject effect in effects)
-            {
-                Destroy(effect);
-            }
 
             // 파편 효과 생성 및 방향 설정
             GameObject impactEffect = Instantiate(impactEffectPrefab, contact.point, Quaternion.identity);
             impactEffect.transform.forward = impactDirection;
         }
-       
+
+        if (collision.gameObject.CompareTag("Enemy"))
+        {
+            ContactPoint contact = collision.contacts[0]; // 충돌 지점 정보 가져오기
+            Vector3 impactDirection = contact.normal; // 충돌 지점의 법선 벡터의 반대 방향
+
+            HealthBar _healthBar = collision.gameObject.GetComponentInChildren<HealthBar>();
+            _healthBar.UpdateHealthBar(5,impactDirection);
+
+
+            // 파편 효과 생성 및 방향 설정
+            GameObject impactEffect = Instantiate(impactEffectPrefab, contact.point, Quaternion.identity);
+            impactEffect.transform.forward = impactDirection;
+        }
+        if (collision.gameObject.CompareTag("Spider"))
+        {
+            ContactPoint contact = collision.contacts[0]; // 충돌 지점 정보 가져오기
+            Vector3 impactDirection = contact.normal; // 충돌 지점의 법선 벡터의 반대 방향
+
+            HealthBar _healthBar = collision.gameObject.GetComponentInChildren<HealthBar>();
+            _healthBar.UpdateHealthBar(5, impactDirection);
+
+
+            // 파편 효과 생성 및 방향 설정
+            GameObject impactEffect = Instantiate(impactEffectPrefab, contact.point, Quaternion.identity);
+            impactEffect.transform.forward = impactDirection;
+        }
+        GameObject[] effects = GameObject.FindGameObjectsWithTag("Effect");
+        foreach (GameObject effect in effects)
+        {
+            Destroy(effect);
+        }
 
         Destroy(gameObject);
     }

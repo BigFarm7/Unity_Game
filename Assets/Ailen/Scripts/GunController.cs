@@ -1,90 +1,132 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using TMPro;
 
 public class GunController : MonoBehaviour
 {
     public PlayerMovement player;
-    public GameObject bulletPrefab;
-    public Transform firePoint1; 
-    public Transform firePoint2;
-    public float bulletSpeed = 20f; 
-    public int maxAmmo = 12; 
-
-    private int currentAmmo; 
-    private float lastFireTime; 
-    private float fireCooldown = 0.5f;
+    public Gun glock;
+    public Gun m4a1;
+    public Gun hammer;  // Add the hammer
+    private Gun currentGun;
+    private float lastFireTime;
     private bool isReloading = false;
-    public TMP_Text bulletText;
+    public bool buygun = false;
+    private enum Guns { Glock, M4A1, Hammer }  // Include Hammer
+    private Guns currentGunType = Guns.Glock;
 
     void Start()
     {
-        currentAmmo = maxAmmo;
+        glock.gameObject.SetActive(true);
+        m4a1.gameObject.SetActive(false);
+        hammer.gameObject.SetActive(false);  // Set hammer to inactive initially
+        currentGun = glock;
     }
 
     void Update()
     {
-        if (Input.GetButton("Fire1") && currentAmmo > 0 && player.isRightClick && !isReloading)
+        if (Input.GetButton("Fire1") && currentGun.currentAmmo > 0 && player.isRightClick && !isReloading)
         {
-            if (Time.time >= lastFireTime + fireCooldown)
+            if (Time.time >= lastFireTime + currentGun.fireCooldown)
             {
                 Shoot();
-                player.anim.SetTrigger("isShot");
                 lastFireTime = Time.time;
             }
-          
         }
-        if(Input.GetKeyDown(KeyCode.R) && !isReloading && !Input.GetButton("Fire1")&& !IsPlayingAnimation("Shoot"))
+
+        if (Input.GetKeyDown(KeyCode.R) && !isReloading && !Input.GetButton("Fire1") && !IsPlayingAnimation("Shoot"))
         {
             StartCoroutine(Reload());
+        }
+
+        // Switch between guns
+        if (Input.GetKeyDown(KeyCode.Alpha1) && currentGunType != Guns.Glock)
+        {
+            StartCoroutine(SwitchGun(Guns.Glock));
+        }
+        else if (Input.GetKeyDown(KeyCode.Alpha2) && currentGunType != Guns.M4A1 &&buygun == true)
+        {
+            StartCoroutine(SwitchGun(Guns.M4A1));
+        }
+        else if (Input.GetKeyDown(KeyCode.Alpha3) && currentGunType != Guns.Hammer)
+        {
+            StartCoroutine(SwitchGun(Guns.Hammer));  // Switch to Hammer
         }
     }
 
     void Shoot()
     {
-       
-        Vector3 firePointBetween = firePoint1.position - firePoint2.position;
-        GameObject bullet = Instantiate(bulletPrefab, firePoint1.position, Quaternion.LookRotation(firePointBetween)*Quaternion.Euler(90,0,0));
-        Rigidbody rb = bullet.GetComponent<Rigidbody>();
-        rb.velocity = firePointBetween * bulletSpeed; 
-
-        StartCoroutine(DestroyBullet(bullet,2.0f));
-
-        currentAmmo--;
-        bulletText.text = currentAmmo + "/" + maxAmmo;
-
-        if (currentAmmo <= 0)
-        {
-            Debug.Log("Out of Ammo!");
-        }
+        currentGun.Shoot();
+        player.anim.SetTrigger(currentGunType.ToString() + "Shoot");
     }
-    IEnumerator DestroyBullet(GameObject bullet,float delay)
-    {
-        yield return new WaitForSeconds(delay);
-        Destroy(bullet);
-    }
-  
+
     IEnumerator Reload()
     {
         isReloading = true;
-        player.anim.SetBool("isReloading", true); 
+        player.anim.SetBool("isReloading", true);
 
-        while(player.anim.GetCurrentAnimatorStateInfo(2).normalizedTime<1)
+        while (player.anim.GetCurrentAnimatorStateInfo(2).normalizedTime < 1)
         {
             yield return null;
         }
 
-        currentAmmo = maxAmmo;
+        currentGun.Reload();
         Debug.Log("Reloaded");
 
-        player.anim.SetBool("isReloading", false); 
+        player.anim.SetBool("isReloading", false);
         isReloading = false;
-        bulletText.text = currentAmmo + "/" + maxAmmo;
     }
 
     bool IsPlayingAnimation(string animationName)
     {
         return player.anim.GetCurrentAnimatorStateInfo(2).IsName(animationName);
+    }
+
+    IEnumerator SwitchGun(Guns gunType)
+    {
+        if (isReloading)
+        {
+            yield break; // Don't switch guns while reloading
+        }
+
+        // Perform gun switch animation and logic
+        switch (gunType)
+        {
+            case Guns.Glock:
+                m4a1.gameObject.SetActive(false);
+                hammer.gameObject.SetActive(false);
+                glock.gameObject.SetActive(true);
+                currentGun = glock;
+                player.anim.SetLayerWeight(3, 0);
+                player.anim.SetBool("isRifle", false);
+                player.anim.SetBool("isHammer", false);  // Ensure hammer animation is turned off
+                break;
+            case Guns.M4A1:
+                glock.gameObject.SetActive(false);
+                hammer.gameObject.SetActive(false);
+                m4a1.gameObject.SetActive(true);
+                currentGun = m4a1;
+                player.anim.SetLayerWeight(3, 1);
+                player.anim.SetBool("isRifle", true);
+                player.anim.SetBool("isHammer", false);  // Ensure hammer animation is turned off
+                break;
+            case Guns.Hammer:
+                glock.gameObject.SetActive(false);
+                m4a1.gameObject.SetActive(false);
+                hammer.gameObject.SetActive(true);
+                currentGun = hammer;
+                player.anim.SetLayerWeight(3, 0);  // Assuming hammer uses the same layer as pistol
+                player.anim.SetBool("isRifle", false);
+                player.anim.SetBool("isHammer", true);  // Ensure hammer animation is turned on
+                break;
+        }
+
+       
+            yield return null;
+        
+
+        currentGunType = gunType;
+      
+        Debug.Log("Switched to " + currentGunType);
     }
 }

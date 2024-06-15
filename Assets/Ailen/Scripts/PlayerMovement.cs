@@ -4,16 +4,14 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-
-
-
+    public GameObject hamm;
     public Camera mainCam;
     public GameObject Cam;
     public float speed = 10f;
     public float rotateSpeed = 10.0f;
     public bool isRightClick = false;
     public Animator anim;
-
+    public GunController _gunController;
     public float forwardOffset = 0.2f;
     public float backwardOffset = 0.2f; 
     public float leftOffset = 0.2f; 
@@ -57,7 +55,7 @@ public class PlayerMovement : MonoBehaviour
             anim.SetLayerWeight(1, 0);
             anim.SetLayerWeight(2, 0);
         }
-        if (Input.GetMouseButtonDown(1))
+        if (Input.GetMouseButtonDown(1) && !hamm.activeSelf)
         {
             if (!isRightClick)
             {
@@ -82,7 +80,6 @@ public class PlayerMovement : MonoBehaviour
 
     void FixedUpdate()
     {
-
         VerMove = Input.GetAxisRaw("Vertical");
         HorMove = Input.GetAxisRaw("Horizontal");
         b_Run = Input.GetButton("Run");
@@ -139,8 +136,6 @@ public class PlayerMovement : MonoBehaviour
         }
 
 
-
-
     }
 
     void AimAtMouse()
@@ -159,7 +154,7 @@ public class PlayerMovement : MonoBehaviour
             if (isRightClick)
             {
                 Quaternion targetRotation = Quaternion.LookRotation(direction);
-                transform.rotation = targetRotation*Quaternion.Euler(0,25,0);
+                transform.rotation = targetRotation*Quaternion.Euler(0,31,0);
             }
            
 
